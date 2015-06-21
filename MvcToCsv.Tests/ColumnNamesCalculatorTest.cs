@@ -5,26 +5,12 @@ using NUnit.Framework;
 namespace MvcToCsv.Tests
 {
     [TestFixture]
-    public class CsvColumnNamesUtilityTest
+    public class ColumnNamesCalculatorTest
     {
-        [Test]
-        public void OnlyExtractsPublicInstancePropertiesFromModel()
-        {
-            var columns = CsvColumnNamesUtility.GetPropertyHeaderNames<PropertiesTestModel>();
-
-            CollectionAssert.AreEquivalent(columns.Keys, new[] { "InstanceProperty" });
-            CollectionAssert.AreNotEquivalent(columns.Keys, new[]
-            {
-                "StaticProperty",
-                "PrivateProperty",
-                "InstanceMethod",
-            });
-        }
-
         [Test]
         public void ConsidersDisplayAttributeWhenCalculatingColumnName()
         {
-            var columns = CsvColumnNamesUtility.GetPropertyHeaderNames<ColumnNameTestModel>();
+            var columns = CsvFileFactory.BuildFileMetadata<ColumnNameTestModel>();
             Assert.That(columns["FirstName"].PropertyInfo.CalculateColumnName(), Is.EqualTo("FirstName"));
             Assert.That(columns["LastName"].PropertyInfo.CalculateColumnName(), Is.EqualTo("LastName"));
             Assert.That(columns["FullName"].PropertyInfo.CalculateColumnName(), Is.EqualTo("Full Name"));
@@ -46,21 +32,5 @@ namespace MvcToCsv.Tests
             public string Alias { get; set; }
         }
 
-        class PropertiesTestModel
-        {
-            public static int StaticProperty { get; set; }
-            public int InstanceProperty { get; set; }
-            private string PrivateProperty { get; set; }
-            public string InstanceMethod()
-            {
-                return string.Empty;
-            }
-        }
-
-
     }
-
-    
-
-    
 }

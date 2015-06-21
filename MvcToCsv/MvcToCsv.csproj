@@ -68,7 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CsvFactory.cs" />
-    <Compile Include="CsvHeaderUtility.cs" />
+    <Compile Include="CsvColumnNamesUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

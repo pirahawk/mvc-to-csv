@@ -5,12 +5,12 @@ using NUnit.Framework;
 namespace MvcToCsv.Tests
 {
     [TestFixture]
-    public class CsvHeaderUtilityTest
+    public class CsvColumnNamesUtilityTest
     {
         [Test]
         public void OnlyExtractsPublicInstancePropertiesFromModel()
         {
-            var columns = CsvHeaderUtility.GetPropertyHeaderNames<PropertiesTestModel>();
+            var columns = CsvColumnNamesUtility.GetPropertyHeaderNames<PropertiesTestModel>();
 
             CollectionAssert.AreEquivalent(columns.Keys, new[] { "InstanceProperty" });
             CollectionAssert.AreNotEquivalent(columns.Keys, new[]
@@ -24,7 +24,7 @@ namespace MvcToCsv.Tests
         [Test]
         public void ConsidersDisplayAttributeWhenCalculatingColumnName()
         {
-            var columns = CsvHeaderUtility.GetPropertyHeaderNames<ColumnNameTestModel>();
+            var columns = CsvColumnNamesUtility.GetPropertyHeaderNames<ColumnNameTestModel>();
             Assert.That(columns["FirstName"].PropertyInfo.CalculateColumnName(), Is.EqualTo("FirstName"));
             Assert.That(columns["LastName"].PropertyInfo.CalculateColumnName(), Is.EqualTo("LastName"));
             Assert.That(columns["FullName"].PropertyInfo.CalculateColumnName(), Is.EqualTo("Full Name"));

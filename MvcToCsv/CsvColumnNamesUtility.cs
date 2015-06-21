@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace MvcToCsv
 {
-    public static class CsvHeaderUtility
+    public static class CsvColumnNamesUtility
     {
 
         public static IDictionary<string, CsvHeaderContext> GetPropertyHeaderNames<TModel>()

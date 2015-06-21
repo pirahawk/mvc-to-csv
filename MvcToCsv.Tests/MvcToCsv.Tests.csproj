@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CsvFactoryTest.cs" />
-    <Compile Include="CsvHeaderUtilityTest.cs" />
+    <Compile Include="CsvColumnNamesUtilityTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -6,14 +6,16 @@ using System.Reflection;
 namespace MvcToCsv
 {
     /// <summary>
-    /// Used to calculate the names of each CSV column
+    /// Calculates a csv column names for each field of the model
     /// </summary>
-    public static class ColumnNamesCalculator
+    internal static class ColumnNameCreator
     {
-        public static string CalculateColumnName(this PropertyInfo propertyInfo)
+        internal static string CalculateColumnName(this PropertyInfo propertyInfo)
         {
-            var columnName = propertyInfo.GetCustomAttributes().OfType<DisplayNameAttribute>()
-                .Select(attr => attr.DisplayName)
+            var columnName = propertyInfo.GetCustomAttributes().OfType<CsvColumnNameAttribute>()
+                .Select(attr => attr.ColumnName)
+                .Union(propertyInfo.GetCustomAttributes().OfType<DisplayNameAttribute>()
+                .Select(attr => attr.DisplayName))
                 .Union(propertyInfo.GetCustomAttributes().OfType<DisplayAttribute>()
                     .Select(attr => attr.Name))
                 .FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));

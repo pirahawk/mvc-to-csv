@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using NUnit.Framework;
 
 namespace MvcToCsv.Tests
@@ -9,7 +12,7 @@ namespace MvcToCsv.Tests
         [Test]
         public void OnlyExtractsPublicInstancePropertiesFromModel()
         {
-            var columns = CsvFileFactory.BuildFileMetadata<PropertiesTestModel>();
+            var columns = CsvFileFactory.BuildModelMetadata<PropertiesTestModel>();
 
             CollectionAssert.AreEquivalent(columns.Keys, new[] { "InstanceProperty" });
             CollectionAssert.AreNotEquivalent(columns.Keys, new[]
@@ -20,14 +23,23 @@ namespace MvcToCsv.Tests
             });
         }
 
-        [Test]
-        public void CanCheckIfColumnIgnoredFromScaffolding()
+        IEnumerable<TestCaseData> ScaffoldPropertyTestCases
         {
-            var metaData = CsvFileFactory.BuildFileMetadata<ScaffoldingTestModel>();
+            get
+            {
+                var modelType = typeof (ScaffoldingTestModel);
+                yield return new TestCaseData(modelType.GetProperty("ShouldScaffold")).Returns(true);
+                yield return new TestCaseData(modelType.GetProperty("ShouldScaffoldFromAttribute")).Returns(true);
+                yield return new TestCaseData(modelType.GetProperty("ShouldNotScaffold")).Returns(false);
+            }
+        }
 
-            Assert.That(metaData["ShouldScaffold"].ShouldScaffoldColumn, Is.True);
-            Assert.That(metaData["ShouldScaffoldFromAttribute"].ShouldScaffoldColumn, Is.True);
-            Assert.That(metaData["ShouldNotScaffold"].ShouldScaffoldColumn, Is.False);
+
+        [Test]
+        [TestCaseSource("ScaffoldPropertyTestCases")]
+        public bool IdentifiesIfColumnShouldBeIgnoredFromScaffolding(PropertyInfo propertyInfo)
+        {
+            return propertyInfo.ShouldScaffoldColumn();
         }
 
         class ScaffoldingTestModel

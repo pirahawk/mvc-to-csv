@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,7 +8,8 @@ namespace MvcToCsv
 {
     public static class CsvFileFactory
     {
-        public static IDictionary<string, CsvColumnContext> BuildFileMetadata<TModel>()
+        
+        public static IDictionary<string, CsvColumnContext> BuildModelMetadata<TModel>()
         {
             var headerContexts = FilterPropertiesToScaffold<TModel>()
                 .ToDictionary(
@@ -16,29 +18,25 @@ namespace MvcToCsv
                     {
                         PropertyInfo = pi,
                         Name = pi.CalculateColumnName(),
-                        ShouldScaffoldColumn = pi.ShouldScaffoldColumn()
+                        ScaffoldColumn = pi.ShouldScaffoldColumn()
                     });
 
             return headerContexts;
         }
 
-        private static bool ShouldScaffoldColumn(this PropertyInfo propertyInfo)
+        internal static bool ShouldScaffoldColumn(this PropertyInfo propertyInfo)
         {
+            if (propertyInfo == null) 
+                throw new ArgumentNullException("propertyInfo");
+
             var scaffoldColumnAttribute = propertyInfo.GetCustomAttribute<ScaffoldColumnAttribute>();
             return scaffoldColumnAttribute == null || scaffoldColumnAttribute.Scaffold;
         }
 
-        private static IEnumerable<PropertyInfo> FilterPropertiesToScaffold<TModel>()
+        internal static IEnumerable<PropertyInfo> FilterPropertiesToScaffold<TModel>()
         {
             var modelType = typeof(TModel);
             return modelType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
         }
-    }
-
-    public class CsvColumnContext
-    {
-        public PropertyInfo PropertyInfo { get; set; }
-        public string Name { get; set; }
-        public bool ShouldScaffoldColumn { get; set; }
     }
 }

@@ -8,6 +8,11 @@ namespace MvcToCsv
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
     public class CsvIgnoreAttribute : Attribute
     {
-        
+        public bool Ignore { get; private set; }
+
+        public CsvIgnoreAttribute(bool ignore)
+        {
+            Ignore = ignore;
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace MvcToCsv
         /// <summary>
         /// Column name to be used when serializing this field
         /// </summary>
-        public string ColumnName { get; set; }
+        public string ColumnName { get; private set; }
 
         public CsvColumnNameAttribute(string columnName)
         {

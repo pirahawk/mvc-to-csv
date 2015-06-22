@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace MvcToCsv.Tests
 {
     [TestFixture]
-    public class ColumnNameCreatorTest
+    public class PropertyInfoExtensionsTest
     {
         IEnumerable<TestCaseData> CalculateNameTestCases
         {
@@ -34,6 +34,36 @@ namespace MvcToCsv.Tests
         {
             var modelType = typeof(ColumnNamePreferenceModel);
             Assert.That(modelType.GetProperty("TestField").CalculateColumnName(), Is.EqualTo("Column Name Attribute"));
+        }
+
+
+        IEnumerable<TestCaseData> ScaffoldPropertyTestCases
+        {
+            get
+            {
+                var modelType = typeof(ScaffoldingTestModel);
+                yield return new TestCaseData(modelType.GetProperty("ShouldScaffold")).Returns(false);
+                yield return new TestCaseData(modelType.GetProperty("ShouldScaffoldFromAttribute")).Returns(false);
+                yield return new TestCaseData(modelType.GetProperty("ShouldNotScaffold")).Returns(true);
+            }
+        }
+
+        [Test]
+        [TestCaseSource("ScaffoldPropertyTestCases")]
+        public bool IdentifiesIfColumnShouldBeIgnoredFromScaffolding(PropertyInfo propertyInfo)
+        {
+            return propertyInfo.ShouldIgnoreFromSerialize();
+        }
+
+        class ScaffoldingTestModel
+        {
+            public int ShouldScaffold { get; set; }
+
+            [CsvIgnore(true)]
+            public int ShouldNotScaffold { get; set; }
+
+            [CsvIgnore(false)]
+            public int ShouldScaffoldFromAttribute { get; set; }
         }
 
         class ColumnNamePreferenceModel

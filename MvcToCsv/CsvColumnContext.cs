@@ -6,6 +6,6 @@ namespace MvcToCsv
     {
         public PropertyInfo PropertyInfo { get; set; }
         public string Name { get; set; }
-        public bool ScaffoldColumn { get; set; }
+        public bool IgnoreColumn { get; set; }
     }
 }

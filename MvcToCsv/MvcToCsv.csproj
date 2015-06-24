@@ -70,6 +70,7 @@
     <Compile Include="CsvColumnContext.cs" />
     <Compile Include="CsvColumnNameAttribute.cs" />
     <Compile Include="CsvFactory.cs" />
+    <Compile Include="ModelValueProvider.cs" />
     <Compile Include="PropertyInfoExtensions.cs" />
     <Compile Include="CsvMetadataFactory.cs" />
     <Compile Include="CsvIgnoreAttribute.cs" />

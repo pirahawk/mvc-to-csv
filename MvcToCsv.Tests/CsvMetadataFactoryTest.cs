@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 
 namespace MvcToCsv.Tests
 {
@@ -6,20 +7,26 @@ namespace MvcToCsv.Tests
     public class CsvMetadataFactoryTest
     {
         [Test]
-        public void OnlyExtractsPublicInstancePropertiesFromModel()
+        public void OnlyExtractsPublicInstancePropertiesWithGettersFromModel()
         {
-            var columns = CsvMetadataFactory.BuildModelMetadata<PropertiesTestModel>();
-
-            CollectionAssert.AreEquivalent(columns.Keys, new[] { "InstanceProperty" });
-            CollectionAssert.AreNotEquivalent(columns.Keys, new[]
+            var propertiesToScaffold = CsvMetadataFactory.FilterPropertiesToScaffold<PropertiesTestModel>();
+            var shouldContain = new[] { "InstanceProperty" };
+            var shouldIgnore = new[]
             {
-                "StaticProperty",
-                "PrivateProperty",
-                "InstanceMethod",
-            });
-        }
+                 "StaticProperty",
+                 "PrivateProperty",
+                 "InstanceMethod",
+                 "PropertyWithPrivateGetter",
+                 "PropertyWithNoGetter",
+            };
 
-        
+            Assert.True(shouldContain.All( propertyName => 
+                    propertiesToScaffold.Any( pi => pi.Name == propertyName)));
+
+            Assert.True(shouldIgnore.All(propertyName =>
+                    propertiesToScaffold.All(pi => pi.Name != propertyName)));
+
+        }
 
         class PropertiesTestModel
         {
@@ -29,6 +36,12 @@ namespace MvcToCsv.Tests
             public string InstanceMethod()
             {
                 return string.Empty;
+            }
+
+            public string PropertyWithPrivateGetter { private get; set; }
+            public string PropertyWithNoGetter
+            {
+                set { }
             }
         }
     }

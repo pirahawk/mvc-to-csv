@@ -37,12 +37,60 @@ namespace MvcToCsv
             return ignoreAttribute != null && ignoreAttribute.Ignore;
         }
 
-        internal static IPropertyValueProvider CreateModelValueProvider<TModel>(this PropertyInfo propertyInfo)
+        /// <summary>
+        /// Inspects the Property to identify if it has been decorated with a <see cref="CsvFormatAttribute"/>
+        /// </summary>
+        internal static bool HasFormatAttribute(this PropertyInfo propertyInfo)
         {
-            return new PropertyValueProvider<TModel>(model => propertyInfo.GetValue(model));
+            return propertyInfo.GetCustomAttributes().OfType<CsvFormatAttribute>().Any();
         }
+
+        /// <summary>
+        /// Retreive the <see cref="CsvFormatAttribute"/> instance for the property
+        /// </summary>
+        internal static CsvFormatAttribute GetFormatAttribute(this PropertyInfo propertyInfo)
+        {
+            return propertyInfo.GetCustomAttributes().OfType<CsvFormatAttribute>().FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Is the property a Nullable type
+        /// </summary>
+        internal static bool IsNullable(this PropertyInfo propertyInfo)
+        {
+            return propertyInfo.PropertyType.IsGenericType 
+                && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        /// <summary>
+        /// Resolve the underlying property type if it is a nullable type
+        /// </summary>
+        internal static Type ResolveTypeToInspect(this PropertyInfo propertyInfo)
+        {
+            return propertyInfo.IsNullable() ? Nullable.GetUnderlyingType(propertyInfo.PropertyType)
+                : propertyInfo.PropertyType;
+        }
+
+        /// <summary>
+        /// Create a function which can be used to serialize the property instance value
+        /// </summary>
+        internal static Func<object,string> GetMethodToUseForSerialization(this PropertyInfo propertyInfo)
+        {
+            const string toStringMethod = "ToString";
+            var propType = propertyInfo.ResolveTypeToInspect();
+            var toStrWithFormatArg = propType.GetMethods()
+                    .Where(mi => mi.Name == toStringMethod)
+                    .FirstOrDefault(mi => mi.GetParameters().Any()
+                    && mi.GetParameters().Length == 1
+                    && mi.GetParameters().Single().ParameterType == typeof(string));
+
+            if (!propertyInfo.HasFormatAttribute() || toStrWithFormatArg == null)
+            {
+                return o => o==null? string.Empty: o.ToString();
+            }
+
+            var format = propertyInfo.GetFormatAttribute().Format;
+            return o => o == null ? string.Empty : toStrWithFormatArg.Invoke(o, new object[] { format }) as string;
+        }   
     }
-
-
-    
 }

@@ -9,7 +9,7 @@ namespace MvcToCsv
         /// <summary>
         /// Builds the model metadata by reflecting over its properties
         /// </summary>
-        public static IDictionary<string, CsvColumnContext> BuildModelMetadata<TModel>()
+        public static IDictionary<string, CsvColumnContext> BuildModelMetadata<TModel>() where TModel:class 
         {
             var headerContexts = FilterPropertiesToScaffold<TModel>()
                 .ToDictionary(
@@ -18,8 +18,8 @@ namespace MvcToCsv
                     {
                         PropertyInfo = pi,
                         Name = pi.CalculateColumnName(),
+                        PropertyValueProvider = new PropertyValueProvider<TModel>(pi),
                         IgnoreColumn = pi.ShouldIgnoreFromSerialize(),
-                        PropertyValueProvider = pi.CreateModelValueProvider<TModel>(),
                     });
 
             return headerContexts;

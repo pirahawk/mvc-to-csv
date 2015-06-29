@@ -9,20 +9,15 @@ namespace MvcToCsv
         /// <summary>
         /// Builds the model metadata by reflecting over its properties
         /// </summary>
-        public static IDictionary<string, CsvColumnContext> BuildModelMetadata<TModel>() where TModel:class 
+        public static ICsvModelMetadata BuildModelMetadata<TModel>() where TModel : class
         {
-            var headerContexts = FilterPropertiesToScaffold<TModel>()
-                .ToDictionary(
-                    pi => pi.Name,
-                    pi => new CsvColumnContext
-                    {
-                        PropertyInfo = pi,
-                        Name = pi.CalculateColumnName(),
-                        PropertyValueProvider = new PropertyValueProvider<TModel>(pi),
-                        IgnoreColumn = pi.ShouldIgnoreFromSerialize(),
-                    });
-
-            return headerContexts;
+            var columns = FilterPropertiesToScaffold<TModel>()
+                .Select(propertyInfo => new CsvColumnContext(propertyInfo.Name, 
+                    propertyInfo, 
+                    new PropertyValueProvider<TModel>(propertyInfo), 
+                    propertyInfo.ShouldIgnoreFromSerialize(), 
+                    propertyInfo.CalculateColumnName()));
+            return new CsvModelMetadata(columns);
         }
 
        /// <summary>

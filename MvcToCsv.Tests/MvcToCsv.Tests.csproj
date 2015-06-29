@@ -52,7 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CsvComposerTest.cs" />
     <Compile Include="CsvFactoryTest.cs" />
+    <Compile Include="CsvReportCreatorTest.cs" />
     <Compile Include="PropertyInfoExtensionsTest.cs" />
     <Compile Include="CsvMetadataFactoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

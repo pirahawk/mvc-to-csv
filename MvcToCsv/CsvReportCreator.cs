@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace MvcToCsv
 {
+    /// <summary>
+    /// Orchestrates the required calls to serialize a collection of models to a csv file
+    /// </summary>
     class CsvReportCreator
     {
         private readonly ICsvComposer _csvComposer;
@@ -19,6 +22,9 @@ namespace MvcToCsv
             _writer = writer;
         }
 
+        /// <summary>
+        /// This initiates the serialization process of writing the collection of models to a csv file
+        /// </summary>
         public void CreateCsv<TModel>(IEnumerable<TModel> allRows)
         {
             WriteHeaderRow();

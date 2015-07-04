@@ -8,6 +8,9 @@ namespace MvcToCsv
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
     public class CsvFormatAttribute : Attribute
     {
+        /// <summary>
+        /// The format string to use when serializing the property
+        /// </summary>
         public string Format { get; set; }
 
         public CsvFormatAttribute(string format)

@@ -4,8 +4,12 @@ using System.Linq;
 
 namespace MvcToCsv
 {
+
     public interface ICsvModelMetadata
     {
+        /// <summary>
+        /// The collection of model properties to scaffold within the Csv file
+        /// </summary>
         IEnumerable<CsvColumnContext> ColumnsToScaffold { get; }
     }
 

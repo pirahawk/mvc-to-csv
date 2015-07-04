@@ -18,6 +18,9 @@ namespace MvcToCsv
             _writer = writer;
         }
 
+        /// <summary>
+        /// Accepts a collection of models of type <see cref="TModel"/> and converts them to a csv file
+        /// </summary>
         public void ToCsv<TModel>(IEnumerable<TModel> allRows) where TModel:class
         {
             if (allRows == null) 

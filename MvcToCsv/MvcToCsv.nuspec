@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <projectUrl>https://github.com/pirahawk/mvc-to-csv</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Initial package release</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>Mvc Csv ASP .Net</tags>
+    <dependencies>
+      <group>
+        <dependency id="Microsoft.AspNet.Mvc" version="3.0.20105.1"/>
+      </group>
+    </dependencies>
+  </metadata>
+</package>

@@ -5,10 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+
 [assembly: AssemblyTitle("MvcToCsv")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Serializes a collection of models to csv file and returns in the response")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Piran Tata")]
 [assembly: AssemblyProduct("MvcToCsv")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]

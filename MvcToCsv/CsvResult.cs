@@ -8,7 +8,7 @@ namespace MvcToCsv
     /// <summary>
     /// Used to serialize a collection of models of type <see cref="TModel"/> to a Csv file and return them in the HttpResponse
     /// </summary>
-    public class CsvResult<TModel> : ActionResult where TModel:class
+    public class CsvResult<TModel> : ActionResult where TModel : class
     {
         private readonly string _fileName;
         private readonly IEnumerable<TModel> _models;
@@ -24,7 +24,8 @@ namespace MvcToCsv
 
         public override void ExecuteResult(ControllerContext context)
         {
-            using (var fileStream = File.Create(_fileName))
+            var tempFileName = Path.GetTempFileName();
+            using (var fileStream = File.Create(tempFileName))
             {
                 using (var writer = new StreamWriter(fileStream))
                 {
@@ -32,7 +33,14 @@ namespace MvcToCsv
                     var csvFactory = new CsvFactory(reportWriter);
                     csvFactory.ToCsv(_models);
                 }
-                new FileStreamResult(fileStream, "text/plain").ExecuteResult(context);
+            }
+
+            using (var fileStream = File.OpenRead(tempFileName))
+            {
+                new FileStreamResult(fileStream, "text/plain")
+                {
+                    FileDownloadName = _fileName
+                }.ExecuteResult(context);
             }
         }
     }
